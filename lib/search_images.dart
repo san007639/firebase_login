@@ -27,12 +27,11 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
   void initState() {
     super.initState();
     _loadSearchHistory();
-    _fetchImages(); // Call fetch images here for initial load
+    _fetchImages();
 
-    // Add listener to the ScrollController
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        _fetchImages(); // Load more images when reaching the bottom
+        _fetchImages();
       }
     });
   }
@@ -41,7 +40,7 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
   void dispose() {
     _searchController.dispose();
     _focusNode.dispose();
-    _scrollController.dispose(); // Dispose the ScrollController
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -70,7 +69,7 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
       setState(() {
         _images.addAll(images);
         _currentPage++;
-        _hasMore = images.length == _perPage; // Check if there are more images
+        _hasMore = images.length == _perPage;
       });
     } catch (error) {
       print("Error fetching images: $error");
@@ -93,13 +92,13 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
       _isSearchFieldFocused = false;
     });
 
-    _focusNode.unfocus(); // Hide keyboard
+    _focusNode.unfocus();
 
     try {
       final images = await _apiService.searchImages(query, page: _currentPage, perPage: _perPage);
       setState(() {
         _images.addAll(images);
-        _hasMore = images.length == _perPage; // Check if more images are available
+        _hasMore = images.length == _perPage;
         _currentPage++;
 
         if (images.isEmpty) {
@@ -108,12 +107,12 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
       });
 
       await _firestoreService.saveSearchHistory(query);
-      _loadSearchHistory(); // Refresh the search history
+      _loadSearchHistory();
     } catch (error) {
       print("Error searching images: $error");
     } finally {
       setState(() {
-        _isLoading = false; // End loading state
+        _isLoading = false;
       });
     }
   }
@@ -129,7 +128,7 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
             TextButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -152,7 +151,7 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
               focusNode: _focusNode,
               onSubmitted: (query) {
                 _searchImages(query);
-                _searchController.clear(); // Clear the text field after search
+                _searchController.clear();
               },
               decoration: InputDecoration(
                 hintText: 'Search for images...',
@@ -161,7 +160,7 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
               ),
               onTap: () {
                 setState(() {
-                  _isSearchFieldFocused = true; // Show dropdown when search field is focused
+                  _isSearchFieldFocused = true;
                 });
               },
             ),
@@ -192,8 +191,8 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
                       ),
                       onTap: () {
                         _searchImages(_searchHistory[index]);
-                        _focusNode.unfocus(); // Unfocus the text field
-                        _searchController.clear(); // Clear the text field after selection
+                        _focusNode.unfocus();
+                        _searchController.clear();
                       },
                     ),
                   );
@@ -202,12 +201,12 @@ class _ImageSearchScreenState extends State<ImageSearchScreen> {
             ),
           Expanded(
             child: ListView.builder(
-              controller: _scrollController, // Use the ScrollController
+              controller: _scrollController,
               padding: EdgeInsets.all(15),
-              itemCount: _images.length + (_isLoading ? 1 : 0), // Show loading indicator if loading
+              itemCount: _images.length + (_isLoading ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == _images.length) {
-                  return Center(child: CircularProgressIndicator()); // Loading indicator at the bottom
+                  return Center(child: CircularProgressIndicator());
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
