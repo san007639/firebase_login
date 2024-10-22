@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   goToSignup(BuildContext context) => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  ImageSearchScreen()),
+        MaterialPageRoute(builder: (context) =>  SignupScreen()),
       );
 
   goToHome(BuildContext context) => Navigator.push(
